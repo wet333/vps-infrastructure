@@ -2,7 +2,7 @@ version: '3'
 
 services:
   homepage:
-    image: wetagustin/vps-homepage:1.0.3
+    image: wetagustin/vps-homepage:1.0.5
     expose:
       - "80"
       - "443"
