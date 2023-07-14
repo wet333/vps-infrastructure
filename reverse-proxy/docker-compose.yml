@@ -28,7 +28,7 @@ services:
       - vhostd:/etc/nginx/vhost.d
       - html:/usr/share/nginx/html
     depends_on:
-      - nginx
+      - nginx-proxy
 
 volumes:
   certs:
