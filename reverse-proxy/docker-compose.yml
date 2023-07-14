@@ -30,6 +30,12 @@ services:
     depends_on:
       - nginx
 
+volumes:
+  certs:
+  acme:
+  vhostd:
+  html:
+
 networks:
   default:
     external:
