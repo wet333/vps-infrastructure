@@ -18,8 +18,8 @@ services:
     expose:
       - "3000"
     environment:
-      - VIRTUAL_HOST=agustinwet.online
-      - LETSENCRYPT_HOST=agustinwet.online
+      - VIRTUAL_HOST=api.agustinwet.online
+      - LETSENCRYPT_HOST=api.agustinwet.online
       - LETSENCRYPT_EMAIL=wet.4gustin@gmail.com
     networks:
       - proxy-net
