@@ -13,6 +13,17 @@ services:
     networks:
       - proxy-net
 
+  typescript-api:
+    image: wetagustin/vps-typescript-api:latest
+    expose:
+      - "3000"
+    environment:
+      - VIRTUAL_HOST=agustinwet.online
+      - LETSENCRYPT_HOST=agustinwet.online
+      - LETSENCRYPT_EMAIL=wet.4gustin@gmail.com
+    networks:
+      - proxy-net
+
 networks:
   proxy-net:
     external:
