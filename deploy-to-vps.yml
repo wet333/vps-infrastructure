@@ -1,0 +1,45 @@
+---
+- name: Setup Docker-Compose Architecture
+  hosts: vps
+  gather_facts: false
+  become: true
+  
+  tasks:
+    - name: Get Docker container Apps IDs
+      shell: docker ps -a --format "{{.ID}} {{.IMAGE}}" | grep 'wetagustin/' | awk '{print $1}'
+      register: docker_container_ids
+
+    - name: Stop all Docker containers
+      command: docker stop {{ item }}
+      with_items: "{{ docker_container_ids.stdout_lines }}"
+      ignore_errors: yes
+
+    - name: Remove all Docker containers
+      command: docker rm {{ item }}
+      with_items: "{{ docker_container_ids.stdout_lines }}"
+      ignore_errors: yes
+
+    - name: Ensure docker-compose directory exists
+      file:
+        path: "/home/{{ ansible_user }}/docker-compose"
+        state: directory
+
+    - name: Copy docker-compose files
+      copy:
+        src: "{{ item.src }}"
+        dest: "/home/{{ ansible_user }}/docker-compose/{{ item.name }}"
+      with_items:
+        - { name: 'docker-compose-file1.yml', src: './reverse-proxy/docker-compose.yml' }
+        - { name: 'docker-compose-file2.yml', src: './apps/docker-compose.yml' }
+
+    - name: Run docker-compose for file1
+      command: docker-compose -f "/home/{{ ansible_user }}/docker-compose/docker-compose-file1.yml" up -d
+      args:
+        chdir: "/home/{{ ansible_user }}/docker-compose"
+      ignore_errors: true
+
+    - name: Run docker-compose for file2
+      command: docker-compose -f "/home/{{ ansible_user }}/docker-compose/docker-compose-file2.yml" up -d
+      args:
+        chdir: "/home/{{ ansible_user }}/docker-compose"
+      ignore_errors: true
