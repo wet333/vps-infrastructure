@@ -25,12 +25,12 @@ services:
 
   # Copy created only for testing purposes
   typescript-api2:
-    image: wetagustin/vps-typescript-api:latest
+    image: wetagustin/ts-api-v2:0.0.1
     expose:
       - "3000"
     environment:
-      - VIRTUAL_HOST=node1.agustinwet.online
-      - LETSENCRYPT_HOST=node1.agustinwet.online
+      - VIRTUAL_HOST=ts2.agustinwet.online
+      - LETSENCRYPT_HOST=ts2.agustinwet.online
       - LETSENCRYPT_EMAIL=wet.4gustin@gmail.com
     networks:
       - proxy-net
