@@ -6,7 +6,7 @@
   
   tasks:
     - name: Get Docker container Apps IDs
-      shell: docker ps -a --format "{{.ID}} {{.IMAGE}}" | grep 'wetagustin/' | awk '{print $1}'
+      shell: ! docker ps -a --format={% raw %}"{{.ID}} {{.Image}}"{% endraw %} | grep "wetagustin/" | awk "{print $1}"
       register: docker_container_ids
 
     - name: Stop all Docker containers

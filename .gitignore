@@ -1,3 +1,5 @@
 vps-deps
 
 real_inventory
+
+inventory.ansible

@@ -25,7 +25,7 @@ services:
 
   # Copy created only for testing purposes
   typescript-api2:
-    image: wetagustin/ts-api-v2:0.0.1
+    image: wetagustin/ts-api-v2:0.0.3
     expose:
       - "3000"
     environment:
