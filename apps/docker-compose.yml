@@ -13,7 +13,7 @@ services:
       - proxy-net
 
   typescript-api:
-    image: wetagustin/vps-typescript-api:latest
+    image: wetagustin/ts-api:latest
     expose:
       - "3000"
     environment:
@@ -23,14 +23,13 @@ services:
     networks:
       - proxy-net
 
-  # Copy created only for testing purposes
-  typescript-api2:
-    image: wetagustin/ts-api-v2:0.0.3
+  spring-api:
+    image: wetagustin/spring-api:latest
     expose:
-      - "3000"
+      - "8080"
     environment:
-      - VIRTUAL_HOST=ts2.agustinwet.online
-      - LETSENCRYPT_HOST=ts2.agustinwet.online
+      - VIRTUAL_HOST=spring.agustinwet.online
+      - LETSENCRYPT_HOST=spring.agustinwet.online
       - LETSENCRYPT_EMAIL=wet.4gustin@gmail.com
     networks:
       - proxy-net
