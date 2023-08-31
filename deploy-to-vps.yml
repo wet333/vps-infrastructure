@@ -38,6 +38,12 @@
         chdir: "/home/{{ ansible_user }}/docker-compose"
       ignore_errors: true
 
+    - name: Pull latest images for docker-compose file2
+      command: docker-compose -f "/home/{{ ansible_user }}/docker-compose/docker-compose-file2.yml" pull
+      args:
+        chdir: "/home/{{ ansible_user }}/docker-compose"
+      ignore_errors: true
+
     - name: Run docker-compose for file2
       command: docker-compose -f "/home/{{ ansible_user }}/docker-compose/docker-compose-file2.yml" up -d
       args:
