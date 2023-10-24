@@ -6,8 +6,8 @@ services:
     expose:
       - "80"
     environment:
-      - VIRTUAL_HOST=agustinwet.online
-      - LETSENCRYPT_HOST=agustinwet.online
+      - VIRTUAL_HOST=awet.online
+      - LETSENCRYPT_HOST=awet.online
       - LETSENCRYPT_EMAIL=wet.4gustin@gmail.com
     networks:
       - proxy-net
@@ -17,8 +17,8 @@ services:
     expose:
       - "3000"
     environment:
-      - VIRTUAL_HOST=api.agustinwet.online
-      - LETSENCRYPT_HOST=api.agustinwet.online
+      - VIRTUAL_HOST=api.awet.online
+      - LETSENCRYPT_HOST=api.awet.online
       - LETSENCRYPT_EMAIL=wet.4gustin@gmail.com
     networks:
       - proxy-net
@@ -28,8 +28,8 @@ services:
     expose:
       - "8080"
     environment:
-      - VIRTUAL_HOST=spring.agustinwet.online
-      - LETSENCRYPT_HOST=spring.agustinwet.online
+      - VIRTUAL_HOST=spring.awet.online
+      - LETSENCRYPT_HOST=spring.awet.online
       - LETSENCRYPT_EMAIL=wet.4gustin@gmail.com
     networks:
       - proxy-net
