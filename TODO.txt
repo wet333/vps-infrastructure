@@ -1,1 +1,0 @@
-- Modificar el playbook para que no toque los container del proxy y de los certificados. DONE
