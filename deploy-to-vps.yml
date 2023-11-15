@@ -5,47 +5,74 @@
   become: true
   
   tasks:
-    - name: Get Docker container Apps IDs
-      shell: ! docker ps -a --format={% raw %}"{{.ID}} {{.Image}}"{% endraw %} | grep "wetagustin/" | awk "{print $1}"
-      register: docker_container_ids
 
-    - name: Stop all Docker containers
-      command: docker stop {{ item }}
-      with_items: "{{ docker_container_ids.stdout_lines }}"
-      ignore_errors: yes
+    # Check if proxy-compose.yml exists, and if it exists stop it
+    - name: Check if proxy-compose.yml exists
+      stat:
+        path: "vps-deployment/proxy-compose.yml"
+      register: proxy_compose_file
 
-    - name: Remove all Docker containers
-      command: docker rm {{ item }}
-      with_items: "{{ docker_container_ids.stdout_lines }}"
-      ignore_errors: yes
+    - name: Stop proxy-compose.yml if it exists
+      command: docker-compose -f "proxy-compose.yml" down
+      args:
+        chdir: "vps-deployment"
+      when: proxy_compose_file.stat.exists == true
+      ignore_errors: true
 
-    - name: Ensure docker-compose directory exists
+    # Check if apps-compose.yml exists, and if it exists stop it
+    - name: Check if apps-compose.yml exists
+      stat:
+        path: "vps-deployment/apps-compose.yml"
+      register: apps_compose_file
+
+    - name: Stop docker-compose for apps
+      command: docker-compose -f "apps-compose.yml" --env-file .env down
+      args:
+        chdir: "vps-deployment"
+      when: apps_compose_file.stat.exists == true
+      ignore_errors: true
+
+    - name: Clean up docker-compose for apps
+      command: docker-compose -f "apps-compose.yml" rm -f
+      args:
+        chdir: "vps-deployment"
+      when: apps_compose_file.stat.exists == true
+      ignore_errors: true
+
+    # Create ansible_user/vps-deployment folder
+    - name: Create vps-deployment folder
       file:
-        path: "/home/{{ ansible_user }}/docker-compose"
+        path: "vps-deployment"
         state: directory
+
+    # Copy .env file and docker-compose files
+    - name: Copy .env file
+      copy:
+        src: ".env"
+        dest: "vps-deployment/.env"
 
     - name: Copy docker-compose files
       copy:
         src: "{{ item.src }}"
-        dest: "/home/{{ ansible_user }}/docker-compose/{{ item.name }}"
+        dest: "vps-deployment/{{ item.name }}"
       with_items:
-        - { name: 'docker-compose-file1.yml', src: './reverse-proxy/docker-compose.yml' }
-        - { name: 'docker-compose-file2.yml', src: './apps/docker-compose.yml' }
+        - { name: 'proxy-compose.yml', src: './reverse-proxy/docker-compose.yml' }
+        - { name: 'apps-compose.yml', src: './apps/docker-compose.yml' }
 
-    - name: Run docker-compose for file1
-      command: docker-compose -f "/home/{{ ansible_user }}/docker-compose/docker-compose-file1.yml" up -d
+    # Start proxy and apps
+    - name: Run docker-compose for proxy
+      command: docker-compose -f "proxy-compose.yml" up -d
       args:
-        chdir: "/home/{{ ansible_user }}/docker-compose"
+        chdir: "vps-deployment"
       ignore_errors: true
 
-    - name: Pull latest images for docker-compose file2
-      command: docker-compose -f "/home/{{ ansible_user }}/docker-compose/docker-compose-file2.yml" pull
+    - name: Update all docker-compose images for apps
+      command: docker-compose -f "apps-compose.yml" pull
       args:
-        chdir: "/home/{{ ansible_user }}/docker-compose"
-      ignore_errors: true
+        chdir: "vps-deployment"
 
-    - name: Run docker-compose for file2
-      command: docker-compose -f "/home/{{ ansible_user }}/docker-compose/docker-compose-file2.yml" up -d
+    - name: Run docker-compose for apps
+      command: docker-compose -f "apps-compose.yml" --env-file ".env" up -d
       args:
-        chdir: "/home/{{ ansible_user }}/docker-compose"
+        chdir: "vps-deployment"
       ignore_errors: true

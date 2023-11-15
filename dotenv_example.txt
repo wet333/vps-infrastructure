@@ -1,0 +1,6 @@
+# PostgreSQL
+POSTGRES_HOST=service-name
+POSTGRES_PORT=database-port
+POSTGRES_DB=database-name
+POSTGRES_USER=username
+POSTGRES_PASSWORD=password

@@ -19,3 +19,9 @@ sudo ansible-playbook -i inventory.ini deploy-to-vps.yml
 ```
 
 Please replace inventory.ini with your inventory file and deploy-to-vps.yml with your playbook file.
+
+## Configurations
+
+- Make a copy of dotenv_example.txt and rename it to .env
+- Fill the variables
+- Run the deploy command
