@@ -1,0 +1,6 @@
+all:
+  hosts:
+    your_vps_hostname_or_ip:
+  vars:
+    ansible_user: your_ssh_username
+    ansible_password: your_ssh_password
