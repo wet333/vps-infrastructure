@@ -1,6 +1,0 @@
-# PostgreSQL
-POSTGRES_HOST=docker-service-name
-POSTGRES_PORT=5432
-POSTGRES_DB=database-name
-POSTGRES_USER=username
-POSTGRES_PASSWORD=password
