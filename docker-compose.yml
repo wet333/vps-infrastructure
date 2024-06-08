@@ -3,6 +3,7 @@ version: "2"
 services:
   reverse-proxy:
     image: nginxproxy/nginx-proxy:1.5
+    container_name: nginx-reverse-proxy
     restart: always
     ports:
       - "80:80"
@@ -16,11 +17,11 @@ services:
 
   letsencrypt-companion:
     image: nginxproxy/acme-companion
-    container_name: nginx-proxy-acme
+    container_name: ssl-proxy-companion
     environment:
       - DEFAULT_EMAIL=wet.4gustin@gmail.com
     volumes_from:
-      - nginx-proxy
+      - nginx-reverse-proxy
     volumes:
       - certs:/etc/nginx/certs:rw
       - acme:/etc/acme.sh
