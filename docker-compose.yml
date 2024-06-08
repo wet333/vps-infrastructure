@@ -1,16 +1,45 @@
 version: "2"
 
 services:
-  nginx-proxy:
-    image: nginxproxy/nginx-proxy
-    container_name: nginx-proxy
+  reverse-proxy:
+    image: nginxproxy/nginx-proxy:1.5
+    restart: always
     ports:
       - "80:80"
       - "443:443"
     volumes:
+      - html:/usr/share/nginx/html
+      - certs:/etc/nginx/certs:ro
       - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks:
+      ssl-proxy:
 
-  home:
+  letsencrypt-companion:
+    image: nginxproxy/acme-companion
+    container_name: nginx-proxy-acme
+    environment:
+      - DEFAULT_EMAIL=wet.4gustin@gmail.com
+    volumes_from:
+      - nginx-proxy
+    volumes:
+      - certs:/etc/nginx/certs:rw
+      - acme:/etc/acme.sh
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  statics:
     image: wetagustin/vps-homepage:latest
+    restart: always
     environment:
       - VIRTUAL_HOST=awet.online
+      - LETSENCRYPT_HOST=awet.online
+      - LETSENCRYPT_EMAIL=wet.4gustin@gmail.com
+    networks:
+      - ssl-proxy
+
+networks:
+  ssl-proxy:
+
+volumes:
+  html:
+  certs:
+  acme:
