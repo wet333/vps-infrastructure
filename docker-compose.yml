@@ -1,46 +1,31 @@
-version: "2"
+version: '2'
 
 services:
-  reverse-proxy:
-    image: nginxproxy/nginx-proxy:1.5
-    container_name: nginx-reverse-proxy
-    restart: always
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - html:/usr/share/nginx/html
-      - certs:/etc/nginx/certs:ro
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-    networks:
-      ssl-proxy:
+      - "/etc/nginx/vhost.d"
+      - "/usr/share/nginx/html"
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
+      - "/etc/nginx/certs"
 
-  letsencrypt-companion:
-    image: nginxproxy/acme-companion
-    container_name: ssl-proxy-companion
-    environment:
-      - DEFAULT_EMAIL=wet.4gustin@gmail.com
-    volumes_from:
-      - nginx-reverse-proxy
+  ssl-companion:
+    image: jrcs/letsencrypt-nginx-proxy-companion
     volumes:
-      - certs:/etc/nginx/certs:rw
-      - acme:/etc/acme.sh
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    volumes_from:
+      - "nginx-proxy"
 
-  statics:
-    image: wetagustin/vps-homepage:latest
-    restart: always
+  static-webs:
+    image: wetagustin/vps-homepage
     environment:
       - VIRTUAL_HOST=awet.online
       - LETSENCRYPT_HOST=awet.online
       - LETSENCRYPT_EMAIL=wet.4gustin@gmail.com
-    networks:
-      - ssl-proxy
-
-networks:
-  ssl-proxy:
-
-volumes:
-  html:
-  certs:
-  acme:
+    expose:
+      - "80"
+      - "443"
